@@ -8,7 +8,7 @@ translator = Translator()
 
 # URL
 sidor = 1 #Startar på forumets sida 1.
-max_sidor = str(100) # Max antal sidor den ska gå igenom.
+max_sidor = str(15) # Max antal sidor den ska gå igenom.
 number_of_posts = 0
 sentiment = 0
 list_of_hauss = []
@@ -21,16 +21,20 @@ while int(sidor) <= int(max_sidor):
     poster = driver.find_elements_by_class_name("userPost") #Tar texten från classen userPost och sparar i ett objekt
 
     for text in poster: # Går igenom post för post.
+        try:
+            translation = translator.translate(text.text)  # Översätter med Google API
+            translated_text = translation.text  # Lagrar översatt text i ny variabel.
+            blob = TextBlob(translated_text)  # Tar den översatta texten och kör den i textBlob för att analysera.
+            sentiment_per_post = blob.sentiment[0]  # Lagrar sentimentet i ny variabel. "fe.x: 0.001"
 
-        translation = translator.translate(text.text)# Översätter med Google API
-        translated_text = translation.text # Lagrar översatt text i ny variabel.
-        blob = TextBlob(translated_text) # Tar den översatta texten och kör den i textBlob för att analysera.
-        sentiment_per_post = blob.sentiment[0] #Lagrar sentimentet i ny variabel. "fe.x: 0.001"
+            sentiment = sentiment + sentiment_per_post  # Lägger ihop sentimentet för varje post.
 
-        sentiment = sentiment + sentiment_per_post # Lägger ihop sentimentet för varje post.
+            number_of_posts = number_of_posts + 1  # Counter för antal poster den har analyserat.
+            list_of_hauss.append(sentiment_per_post)
+        except Exception as e:
+            print(e)
 
-        number_of_posts = number_of_posts + 1 # Counter för antal poster den har analyserat.
-        list_of_hauss.append(sentiment_per_post)
+
 
     sidor = sidor + 1
 
