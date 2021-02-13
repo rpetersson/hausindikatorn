@@ -7,9 +7,8 @@ driver = webdriver.PhantomJS()
 translator = Translator()
 
 # URL
-sidor = 1
-max_sidor = str(10)
-
+sidor = 1 #Startar på forumets sida 1.
+max_sidor = str(100) # Max antal sidor den ska gå igenom.
 number_of_posts = 0
 sentiment = 0
 list_of_hauss = []
@@ -19,9 +18,9 @@ while int(sidor) <= int(max_sidor):
     url = synact
     driver.get(url)
     print(url)
-    poster = driver.find_elements_by_class_name("userPost")
+    poster = driver.find_elements_by_class_name("userPost") #Tar texten från classen userPost och sparar i ett objekt
 
-    for text in poster:
+    for text in poster: # Går igenom post för post.
 
         translation = translator.translate(text.text)# Översätter med Google API
         translated_text = translation.text # Lagrar översatt text i ny variabel.
